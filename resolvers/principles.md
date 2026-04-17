@@ -16,7 +16,7 @@ Implication: the description field is **load-bearing infrastructure**, not metad
 
 A real-world example: a CLAUDE.md grew to 20,000 lines — every quirk, every pattern, every lesson the author had encountered. The model's attention degraded measurably. The fix was about 200 lines — just pointers to documents. The resolver loads the right one when it matters. The 20,000 lines of knowledge stayed accessible on demand, without polluting the context window on every turn.
 
-This is a concrete instance of the **always-on injection vs just-in-time injection** distinction (see `../harness/context-injection/notes.md`):
+This is a concrete instance of the **always-on injection vs just-in-time injection** distinction (see `../harness/context-injection/principles.md`):
 - Always-on (system prompt, CLAUDE.md): pay token cost on every turn → keep it small.
 - Just-in-time (resolver-loaded docs, skill bodies): pay token cost only when relevant → can be large.
 
@@ -39,9 +39,3 @@ The current `workflows` SKILL.md is itself ~200 lines and fairly content-dense. 
 - Keep the SKILL.md short and trigger-rich (good descriptions, clear "when to use").
 - Move detailed material into linked documents (e.g., `harness.md`, `skills.md`, `architecture.md`) loaded only when relevant.
 - Use the resolver pattern *internally*: the skill body itself dispatches to sub-procedures based on the kind of workflow being designed.
-
-## Open questions
-
-- Should the workflow skill point to other skills (harness, memory, architecture) as siblings, or keep them as internal sections?
-- Are there "always-on" parts of the current skill (preferences, latent/deterministic split) that deserve to live in the resolver layer rather than per-invocation?
-- How does resolver design interact with the auto-loaded global CLAUDE.md? (User already has 200+ lines of personal CLAUDE.md.)

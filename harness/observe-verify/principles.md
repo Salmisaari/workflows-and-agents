@@ -62,10 +62,3 @@ Detection signals worth instrumenting:
 - **Length ablation** — run identical prompts at varying context sizes to isolate length as the root cause.
 
 Four strategic responses (pick one per failure): **write** (put the critical info at the edges, not middle), **select** (cut the distraction), **compress** (summarize the middle), **isolate** (split tasks across separate contexts).
-
-## Open questions
-
-- How to make verification cheap enough that "after every action" becomes default.
-- Vision model verification (screenshot diffing) vs. text-based assertion.
-- How to avoid verification *itself* introducing context bloat.
-- Re-benchmark cadence — models shift degradation thresholds on each release; quarterly re-test worth scheduling.

@@ -6,7 +6,7 @@ Working notes for understanding how to build agentic workflows. The output of th
 
 ## Why this exists
 
-Goal: collect theory of agent construction from current best sources (articles + real-world implementations), then design the right shape of skills to make this knowledge actionable.
+Goal: synthesize the best thinking from the public community on how agents should be built, then design the right shape of skills to make this knowledge actionable.
 
 The current `workflows` skill at `~/.claude/skills/workflows/SKILL.md` is the starting point. It conflates several concerns and uses overly rigid interaction gating. The rewrite (or split into multiple skills) will be informed by what's captured here.
 
@@ -31,18 +31,18 @@ workflow_skill/
 ├── skills/
 │   └── principles.md       method-call pattern, encoding spectrum, learning loop, diarization
 ├── tools/
-│   └── notes.md            narrow fast tools beat god-tools
+│   └── principles.md            narrow fast tools beat god-tools
 ├── harness/
 │   ├── anatomy.md          5-component model: context-injection, control, tools, observe, persist
 │   ├── openness-spectrum.md  control surface from open → managed
 │   ├── runtime-sizing.md   lean runtime + content-rich skills
 │   ├── runtime-patterns.md   persistent vs container, multi-channel, IPC, compression, providers
-│   ├── context-injection/notes.md
-│   ├── control/notes.md    compaction, orchestration, ralph loops
-│   ├── observe-verify/notes.md
-│   └── persist/notes.md    files as the cleanest long-term memory
+│   ├── context-injection/principles.md
+│   ├── control/principles.md    compaction, orchestration, ralph loops
+│   ├── observe-verify/principles.md
+│   └── persist/principles.md    files as the cleanest long-term memory
 └── resolvers/
-    └── notes.md            routing tables for context, just-in-time injection
+    └── principles.md            routing tables for context, just-in-time injection
 ```
 
 ## Approach
@@ -51,7 +51,7 @@ An interpretation of what's most relevant right now for designing agentic workfl
 
 ## Key conclusions so far
 
-1. **The harness is the product.** Both articles and both implementations confirm this.
+1. **The harness is the product.** The most consistent signal across theory and production systems.
 2. **Memory and harness are inseparable.** Owning one means owning the other.
 3. **Right architecture: lean runtime + content-rich markdown skills + deterministic tooling.** Variations exist in shape (e.g., container-per-execution) but the layering holds.
 4. **Latent vs deterministic split is the most important boundary.** Wrong-side placement is the most common mistake.
@@ -75,33 +75,3 @@ An interpretation of what's most relevant right now for designing agentic workfl
 22. **Stop-at-ambiguity is a first-class runtime discipline**, not a prompt suggestion. The #1 expensive failure mode is agents confidently going the wrong way at an ambiguous decision point. Required: confidence calibration, plausible-alternatives listing, stop-behavior explicit in system prompt.
 23. **Review has two modes, one skill.** Proactive audit (5 dimensions: strategic fit / UX / technical / maintainability / safety) and reactive debug (5 context-degradation modes + ambiguity). Both answer "which dimension failed?" — different entry points to the same diagnostic.
 24. **Maintainability is the silently-decaying dimension** for agent workflows. Skill-file sprawl, opaque memory choices, untracked prompt tweaks kill the workflow before a user complaint ever shows up.
-
-## Open questions before designing the skill set
-
-1. **Audience scope:** is the skill set for people **building harnesses**, **writing skill files for an existing harness like Claude Code**, or both?
-2. **Skill granularity:** one umbrella `workflows` skill, or several focused skills (`harness-design`, `memory-design`, `persona-design`, `skill-design`, `architecture-review`)?
-3. **Starting skill:** what does the entry point look like? A diagnostic that asks the user about their goal and routes to the relevant focused skills?
-4. **Interaction style:** the existing skill uses forced BIG/SMALL gating and mandatory pauses. What's the right replacement — guided-but-skippable? Pure reference? Conversational?
-5. **Persona depth:** does the skill set need a dedicated persona/voice-DNA skill, or is it a section within a broader skill?
-6. **Self-modifying mechanism:** do we want any of the resulting skills to learn from feedback, or keep them all static for v1?
-
-## Status
-
-- [x] Theory captured from articles 1, 2
-- [x] Real-world patterns captured from openclaw, hermes-agent
-- [x] Productive tensions surfaced and synthesized
-- [x] Pattern catalog distilled from real-world agents
-- [x] Boil-the-ocean heuristic added (scenario enumeration before architecture)
-- [x] Constraints principle captured (mutable / immutable boundary)
-- [x] Confidence-routed branching, audit-before-action, pre-hydration, multi-model dispatch folded in
-- [x] 5 context-degradation failure modes folded into observe-verify (lost-in-middle, poisoning, distraction, confusion, clash)
-- [x] Tool-design principles folded into tools (consolidate, verb-noun, recovery errors)
-- [x] Multi-agent coordination axis (supervisor / peer-to-peer / hierarchical) added to architecture
-- [x] Token-budget reality principle captured (~80% of variance from context quality)
-- [x] Skill set agreed: 6 topic-named skills (design-workflow, memory-system, scenarios, constraints, workflow-review, workflow-ux)
-- [x] Design DNA (four principles) + Stop-at-ambiguity principle captured in architecture.md
-- [x] Decision-point branching captured in harness/control/notes.md (companion to action-routing)
-- [x] Five proactive validation dimensions captured in harness/observe-verify/notes.md
-- [x] Theory pass complete — ready for skill drafting
-- [ ] Draft the 6 skill files
-- [ ] Replace / refactor existing `workflows` SKILL.md

@@ -38,13 +38,6 @@ Benefits:
 - **Crash recovery.** A killed runtime can re-scan `pending/` on restart and retry or escalate.
 - **Audit trail.** Every action has a file with the full context — diff-able, grep-able, replay-able.
 - **Deduplication.** Idempotency key in the filename prevents the same action firing twice.
-- **Human review surface.** `pending/` is the queue a human reviews when in `draft` confidence mode (see `../control/notes.md`).
+- **Human review surface.** `pending/` is the queue a human reviews when in `draft` confidence mode (see `../control/principles.md`).
 
 This is the persistence-layer answer to "how do I trust an agent with write actions?" The agent doesn't get trust; the file system does.
-
-## Open questions
-
-- File format conventions — markdown, JSON, both?
-- How to prevent persisted state from rotting (stale notes that mislead future turns).
-- When to commit persisted state to git automatically vs. leave dirty.
-- Retention policy on `done/` — keep forever, archive after N days, summarize and drop?

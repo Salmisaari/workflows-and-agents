@@ -9,7 +9,7 @@ A system for cloning someone's real communication style from their actual writin
 
 ## How It Works
 
-The user shares real writing samples (Slack messages, emails, texts, investor updates, customer replies, personal messages) and Claude analyzes them to build a voice profile. Claude then writes in that voice, including the quirks.
+The user shares real writing samples (chat messages, emails, texts,  updates, customer replies, personal messages) and Claude analyzes them to build a voice profile. Claude then writes in that voice, including the quirks.
 
 ## Step 1: Collect Samples
 
@@ -17,14 +17,14 @@ Ask the user to share writing samples. The more channels, the better. Each chann
 
 Prompt the user like this:
 
-> To clone your voice I need real samples of your writing. Share whatever you've got: copy-paste Slack threads, emails, WhatsApp messages, investor updates, customer service replies, personal texts, LinkedIn posts, long-form writing. Mix of contexts is ideal. Even 5-10 messages per channel gives me something to work with. More is better.
+> To clone your voice I need real samples of your writing. Share whatever you've got: copy-paste Slack threads, emails, WhatsApp messages, stakeholder updates, customer service replies, personal texts, long-form writing. Mix of contexts is ideal. Even 5-10 messages per channel gives me something to work with. More is better.
 
 If the user has connected tools (Gmail, Slack, Google Drive), offer to pull samples directly:
 
 > I can also search your Gmail, Slack, or Drive for recent messages if you'd rather not copy-paste. Want me to pull some?
 
-For Gmail: search recent sent messages across different recipients (investors, team, customers, personal).
-For Google Drive: search for docs, investor updates, or memos the user authored.
+For Gmail: search recent sent messages across different audiences (formal stakeholders, team, customers, personal).
+For Google Drive: search for docs, posted comments, or memos the user authored.
 
 **Critical: preserve everything exactly as written.** Typos, punctuation shortcuts, incomplete sentences, emoji usage, capitalization quirks. These are signal, not noise.
 
@@ -61,7 +61,7 @@ How they build trust in text. How much they self-disclose. How they handle confl
 How they frame conversations ("quick thing," "thinking out loud," "fyi"). How they signal importance. How they manage expectations. How they follow up.
 
 **9. Audience adaptation**
-How voice shifts between contexts: investor emails vs. team Slack vs. friends vs. suppliers vs. customer service. The delta between registers is itself a signature. Map which dimensions shift and which stay constant.
+How voice shifts between contexts: external emails vs. team Slack vs. friends vs. suppliers vs. customer service. The delta between registers is itself a signature. Map which dimensions shift and which stay constant.
 
 ### Cognitive Dimensions (how they think)
 
@@ -111,10 +111,10 @@ After analysis, produce a **Voice Profile** document. Structure it as:
 For every pattern identified, classify it into one of three columns:
 
 | Pattern | Classification | Reasoning |
-|---|---|---|
-| *e.g. dropping articles in Slack* | **Keep as-is** | Signals speed and authenticity |
-| *e.g. burying the ask in investor emails* | **Soften** | Reduce frequency, don't eliminate |
-| *e.g. clear analogies when explaining technical concepts* | **Amplify** | Correlates with highest-quality communication |
+| ------- | -------------- | --------- |
+| A fast-channel grammar shortcut (abbreviations, dropped words) | **Keep as-is** | Signals speed and authenticity in casual contexts |
+| A hedging habit that shows up under stress or fatigue | **Soften** | Reduce frequency, don't eliminate |
+| A clarity move (vivid analogies, decisive framing) that correlates with the user's best communication | **Amplify** | Weight higher; this is the voice at its sharpest |
 
 **Keep as-is:** The pattern is characteristic and either neutral or positively received. Reproducing it makes output feel authentic. Some "imperfect" patterns belong here: typos that signal urgency, bluntness that reads as confidence, humor-as-deflection that's actually charming.
 
@@ -136,9 +136,9 @@ While analyzing the voice, identify patterns the user likely wants to improve. D
 
 > "You tend to soften requests heavily in team messages ('if you get a chance,' 'no rush,' 'whenever works') even when the task is urgent. This might be intentional warmth or it might be diluting urgency. Worth flagging."
 
-> "Your investor emails front-load context and bury the ask. The ask usually lands in the last 2 sentences. Some investors prefer the ask up top."
+> "In formal emails you front-load context and bury the ask. The ask often lands in the last 2 sentences. Some recipients prefer the ask up top."
 
-> "You drop articles ('need update on this' vs. 'need an update on this') in Slack but not email. Consistent pattern, probably speed-typing."
+> "You compress phrasing in fast channels (dropped words, abbreviations) but write fully in longer-form contexts. Consistent pattern, probably speed-typing."
 
 > "When delivering bad news you tend to intellectualize first and empathize second. The information is always accurate but the emotional landing could be warmer."
 
@@ -148,7 +148,7 @@ These observations help the user see their own patterns. They choose what to kee
 
 When writing a message for the user, follow this process:
 
-1. **Identify the channel and audience.** Slack to a teammate? Email to an investor? Text to a friend? This selects the right register from the voice profile.
+1. **Identify the channel and audience.** Slack to a teammate? Formal email to a stakeholder? Text to a friend? This selects the right register from the voice profile.
 2. **Apply constants.** The patterns that never change regardless of context.
 3. **Apply adaptations.** Shift register based on audience.
 4. **Include signature patterns.** The quirks that make it sound like them.
@@ -159,7 +159,7 @@ When writing a message for the user, follow this process:
 
 - **Slack (team):** Casual register. Include typo patterns, abbreviations, emoji habits. Fragments OK. Short.
 - **Slack (cross-functional):** Slightly more structured. Still casual but clearer.
-- **Email (investor):** Formal register. Clean copy. But keep the voice (sentence rhythm, cognitive patterns, how they frame things). Don't make it sound like someone else wrote it.
+- **Email (formal / stakeholder):** Formal register. Clean copy. But keep the voice (sentence rhythm, cognitive patterns, how they frame things). Don't make it sound like someone else wrote it.
 - **Email (supplier/partner):** Professional but direct. Match their natural level of warmth or bluntness.
 - **Email (customer service):** Match their CS tone. Some people are warm, some are efficient, some are both.
 - **Text/WhatsApp:** Most casual. Closest to raw voice. Typos, shortcuts, lowercase, all of it.
@@ -182,4 +182,4 @@ If the user asks you to write something but hasn't shared samples yet, say so:
 
 > I don't have samples of your writing yet, so I can't clone your voice. Want to share some messages so I can build a profile? Even 5-10 across a couple channels gives me a starting point.
 
-Don't guess. Don't apply a generic "casual" or "professional" tone and call it theirs. The whole point is specificity.
+Don't guess. Don't apply a generic "casual" or "professional" tone and call it theirs. The whole point is specificity and persona.

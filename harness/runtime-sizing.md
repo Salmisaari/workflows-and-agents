@@ -55,5 +55,5 @@ The current `workflows` skill leans toward runtime-bloated thinking — it tries
 
 A leaner version would:
 - Be much shorter (the discipline is the value, not the comprehensiveness).
-- Push details into linked sub-skills or referenced docs (the "resolver" pattern — see `../resolvers/notes.md`).
+- Push details into linked sub-skills or referenced docs (the "resolver" pattern — see `../resolvers/principles.md`).
 - Trust the model to apply judgment instead of forcing rigid stage gates.

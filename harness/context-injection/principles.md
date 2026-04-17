@@ -8,13 +8,6 @@ What the harness puts in front of the model on each turn.
 - **Skills** — skill metadata (names + descriptions of available skills)
 - **Conversation** — message history (or its compacted summary)
 
-## Open questions to resolve in next pass
-
-- Where does **tool schema** sit — context injection or tools layer? (Probably context: the model needs to *see* tools to decide to call them.)
-- Where does **environment context** (cwd, env vars, git state, time) sit?
-- Distinction between **always-on injection** (system prompt) vs **just-in-time injection** (skill bodies loaded only when invoked) — Claude Code's progressive disclosure pattern.
-- Token budget allocation across the four sources — when context is tight, what gets cut first?
-
 ## Carries forward from existing SKILL.md
 
 Existing skill says: "Each step gets exactly the context it needs. Not the full history — a summary of what came before, plus the raw input it must act on."
@@ -49,4 +42,4 @@ Why this beats letting the model fetch:
 
 The cost: the runtime must know *which entity to hydrate* before the model runs. Use a cheap extraction step (regex, classifier, or small-model call) to identify the entity, then hydrate, then call the main model.
 
-This is one concrete shape of the **resolver** idea (see `../../resolvers/notes.md`): the harness decides what context the model needs and front-loads it.
+This is one concrete shape of the **resolver** idea (see `../../resolvers/principles.md`): the harness decides what context the model needs and front-loads it.

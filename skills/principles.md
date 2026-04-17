@@ -25,7 +25,7 @@ This is **software design with markdown as the programming language and human ju
 
 ## The "no one-off work" rule
 
-Direct quote from the article (worth keeping in any rewritten skill):
+The rule, worth keeping in any rewritten skill:
 
 > "You are not allowed to do one-off work. If I ask you to do something and it's the kind of thing that will need to happen again, you must: do it manually the first time on 3 to 10 items. Show me the output. If I approve, codify it into a skill file. If it should run automatically, put it on a cron.
 >
@@ -47,7 +47,7 @@ This is the mechanism behind the 100x productivity gap. Not a smarter model. The
 
 After execution, a feedback skill reads outcomes (NPS, errors, "OK" responses), diarizes the mediocre ones, extracts patterns, and **writes new rules back into the relevant skill files.**
 
-Example pattern from the article:
+Example pattern:
 ```
 When attendee says "AI infrastructure"
   but startup is 80%+ billing code:
@@ -102,7 +102,7 @@ The current `workflows` skill treats skills as one shape (procedural). The rewri
 
 ## Skill metadata as resolver bait
 
-In a system with many skills, the **description field is load-bearing infrastructure** (see `../resolvers/notes.md`). It's how the harness routes user intent to skill. Practical implications:
+In a system with many skills, the **description field is load-bearing infrastructure** (see `../resolvers/principles.md`). It's how the harness routes user intent to skill. Practical implications:
 
 - Description must contain the **trigger words** users actually type, not just abstract category names
 - Description should distinguish from sibling skills (no two should match the same intent)

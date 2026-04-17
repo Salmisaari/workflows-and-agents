@@ -30,7 +30,7 @@ Catches ambiguity at the *output*, right before a side-effecting action:
 
 The split lives in code, not in the prompt. The model returns `{confidence, action, reason}`; the runtime maps confidence band → branch. Keeps the latent/deterministic boundary clean: the model judges, the harness decides what to do with the judgment.
 
-This is also where **action durability** is enforced (see `../persist/notes.md` on audit-before-action) — the `draft` branch persists the proposal *before* the human sees it, so an approved action can never silently disappear.
+This is also where **action durability** is enforced (see `../persist/principles.md` on audit-before-action) — the `draft` branch persists the proposal *before* the human sees it, so an approved action can never silently disappear.
 
 ### Decision-point routing (proceed / stop)
 
@@ -61,9 +61,3 @@ The current `workflows` skill is essentially a **control pattern**: sequential s
 - Surface ralph loops, parallel orchestration, and dispatch as siblings.
 - Note that control choice is downstream of memory/context choices — you can't ralph-loop if context blows up after 3 iterations.
 - Treat **confidence-routed branching** as the default for write actions where mistakes have real cost.
-
-## Open
-
-- How to articulate when *not* to ralph-loop (drift compounding, cost).
-- Compaction strategies — lossy summary vs. structured extract vs. external recall.
-- Where confidence thresholds live — in skill metadata, runtime config, or learned from feedback.

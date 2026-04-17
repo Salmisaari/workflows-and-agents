@@ -74,7 +74,7 @@ Only the surface layer produces a caricature. All four produce an agent that wri
 
 Voice is a constant core plus channel-dependent deltas. A working profile maps both:
 
-- **Constants** appear everywhere — Slack, investor email, texts. These are the signature.
+- **Constants** appear everywhere — Slack, formal email, texts. These are the signature.
 - **Adaptations** are how register shifts by audience and channel. The delta itself is part of the signature.
 
 ### Calibration: amplify / keep / soften
@@ -120,10 +120,3 @@ Persona must survive across sessions. The reliable pattern:
 4. System prompt is cached (provider-side cache) so the cost is amortized
 
 This is the same architectural shape as long-term memory: **plain files, owned by the user, version-controlled, model-agnostic**. Persona is a special case of long-term memory whose subject is the agent itself.
-
-## Open questions for the rewrite
-
-- Does the workflow skill prescribe a persona layer at all, or only mention it as available?
-- For use cases where the agent writes on behalf of a specific person: is voice-DNA replication worth a dedicated step in the starting skill?
-- How does persona interact with multi-agent workflows where each agent has a different role? (Likely: each agent has its own persona stack; orchestrator has its own identity separate from any of them.)
-- Should persona include negative space — explicit statements of what the agent will NOT do? (E.g., "you do not use emojis unless asked.")

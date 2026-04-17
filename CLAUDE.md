@@ -10,26 +10,24 @@ Theory for designing agentic workflows. Will be distilled into 6 skill files (`d
 
 | Path | Contains |
 |------|----------|
-| `README.md` | Human narrative: why this exists, conclusions, status |
+| `README.md` | Human narrative: why this exists, conclusions |
 | `architecture.md` | Cross-layer synthesis (3-layer model, pattern catalog, design DNA, stop-at-ambiguity) |
-| `persona/`, `memory/`, `skills/`, `tools/` | Content layers — `principles.md` (or `notes.md` for tools) per folder |
+| `persona/`, `memory/`, `skills/`, `tools/`, `resolvers/` | Layer theory — `principles.md` per folder |
 | `harness/*.md` | Runtime-shape dimensions — one file per dimension (anatomy, openness-spectrum, runtime-sizing, runtime-patterns) |
-| `harness/context-injection/`, `harness/control/`, `harness/observe-verify/`, `harness/persist/` | 5-component anatomy — `notes.md` per folder |
-| `resolvers/` | Cross-cutting routing pattern — `notes.md` |
+| `harness/context-injection/`, `harness/control/`, `harness/observe-verify/`, `harness/persist/` | 5-component anatomy — `principles.md` per folder |
 
 ## File conventions
 
-- `principles.md` — synthesized theory for a named layer
-- `notes.md` — working notes for a single harness component
+- `principles.md` — synthesized theory for a named topic
 - No author attributions in body (hurts downstream skill performance)
 
 ## Routing rules
 
 - Cross-layer insight → `architecture.md`
 - Layer-scoped insight → that layer's `principles.md`
-- Component-scoped insight → that component's `notes.md`
+- Component-scoped insight → that component's `principles.md`
 - New top-level folder → update this file first, then create
-- Status / narrative updates → `README.md`, not here
+- Narrative / conclusions → `README.md`, not here
 
 ## Read order
 

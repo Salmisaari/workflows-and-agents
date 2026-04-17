@@ -73,12 +73,3 @@ Search-augmented memory is the practical answer to "how do I have unbounded long
 Mature systems abstract memory behind a provider interface so the storage backend can be swapped (file → SQLite → external service like Honcho/Letta) without changing skill or runtime code. This is the same lesson as provider abstraction for models: avoid lock-in by isolating the integration in one place.
 
 The constraint worth holding: regardless of backend, the agent should never directly write to a backend that can't be exported as plain files. If you can't `git diff` your memory, you don't really own it.
-
-## Open question for the rewrite
-
-Does the skill need to **prescribe** a memory architecture, or just **surface the choices**? Lean toward surface-the-choices: memory best practices are still in flux. Locking the skill to a specific memory shape would age fast.
-
-What the skill can durably do:
-- Force the user to **answer the seven questions** above when designing a workflow.
-- Flag any architecture that puts long-term memory behind a closed API.
-- Default to file-based, plain-text long-term memory (auditable, portable, model-agnostic).

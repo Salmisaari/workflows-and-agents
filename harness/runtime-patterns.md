@@ -26,7 +26,7 @@ Production agents often operate across multiple input/output channels (chat plat
 - **Format output per channel** — markdown for Slack, plain text for SMS, rich blocks for Discord
 - **Preserve continuity across channels** — if the same user reaches the agent through different channels, do they share context?
 
-This is a real harness responsibility that the foundational articles don't emphasize. Implication: the workflow-design skill should ask "what channels?" early in the design process — it changes everything from output format to memory grouping.
+This is a real harness responsibility that canonical framings underemphasize. Implication: the workflow-design skill should ask "what channels?" early in the design process — it changes everything from output format to memory grouping.
 
 ## 3. Concurrency and queueing
 
@@ -89,10 +89,3 @@ Implementation looks like a `dispatch(task_type, payload) → model_id` function
 Combined with provider abstraction (section 6), this gives the harness genuine model independence — and the ability to upgrade individual task classes as new models drop without rewriting skills.
 
 The anti-pattern: hard-coding the model name in skill files. That's the shape that ages worst.
-
-## Open questions
-
-- Where does provider abstraction live in a lean runtime? Is the adapter layer "part of the runtime" or "part of the application"?
-- For users who only consume Claude Code (vs build their own runtime), do these patterns matter, or are they handled invisibly?
-- How does container-per-execution interact with persona and memory? (Suggests: persona/memory must be checkpointed in files since the in-process state dies each turn.)
-- Should dispatch decisions be visible to the agent (so it can argue for a model change) or invisible (pure runtime concern)?

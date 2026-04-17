@@ -204,7 +204,7 @@ The principle to enforce in workflow design:
 3. **Make the constraint visible to the agent.** The system prompt should include the constraints. The agent operating against an invisible fence is a failure mode.
 4. **Revisit constraints, but as a human-driven step.** Don't let the agent loosen its own boundaries; that's how scope creep becomes silent.
 
-This pairs with the "audit-before-action" pattern in `harness/persist/notes.md` (the file system is the immutable record of what happened) and with confidence-routed branching in `harness/control/notes.md` (the routing logic is immutable; the model only contributes a confidence score).
+This pairs with the "audit-before-action" pattern in `harness/persist/principles.md` (the file system is the immutable record of what happened) and with confidence-routed branching in `harness/control/principles.md` (the routing logic is immutable; the model only contributes a confidence score).
 
 ## Design DNA
 
@@ -238,17 +238,11 @@ At every decision point during planning or design:
         Surface to the user. Do not proceed until answered.
 ```
 
-Distinct from confidence-routed branching on write actions (see `harness/control/notes.md`) — this catches the error *before* any work happens, at the planning/design layer where wrong paths are invisible until they've cost you.
+Distinct from confidence-routed branching on write actions (see `harness/control/principles.md`) — this catches the error *before* any work happens, at the planning/design layer where wrong paths are invisible until they've cost you.
 
 Required ingredients:
 - **Confidence calibration.** Agent explicitly rates its confidence at each decision point.
 - **Plausible-alternatives listing.** Naming 2–3 paths forces the model to actually think vs. picking one. Often the act of listing reveals which is right.
 - **Visibility in system prompt.** The agent must know "stop at ambiguity" is expected behavior, not an apology.
 
-Diagnostic question for any post-mortem: *"Was there a decision point the agent should have stopped at but didn't?"* Sibling failure class to the five context-degradation modes (see `harness/observe-verify/notes.md`).
-
-## Open questions for skill rewrite
-
-- Does the user actually build harnesses, or just consume Claude Code? If consume → skill should focus on writing good skill files within Claude Code, not building a runtime.
-- Does the user want one skill (`workflows`) or several (`harness`, `memory`, `architecture`, `skill-design`)?
-- How prescriptive should the skill be about the latent/deterministic split? Is "ask which side this step lives on" a forcing function, or condescending?
+Diagnostic question for any post-mortem: *"Was there a decision point the agent should have stopped at but didn't?"* Sibling failure class to the five context-degradation modes (see `harness/observe-verify/principles.md`).
