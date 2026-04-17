@@ -51,7 +51,7 @@ Two distinct things are easily conflated:
 | **Stable across users?** | Yes — defines the agent | No — should be customizable per user/deployment |
 | **Required for every agent?** | Yes | Optional — many useful agents have only operational identity |
 
-Some real-world systems (e.g., NanoClaw orchestrators) deliberately have **only operational identity** — there's no SOUL.md, no character file. The agent is a coordinator, not a personality. This is a valid choice when consistency-of-tone matters less than consistency-of-procedure.
+Some real-world systems (e.g., OpenClaw orchestrators) deliberately have **only operational identity** — there's no SOUL.md, no character file. The agent is a coordinator, not a personality. This is a valid choice when consistency-of-tone matters less than consistency-of-procedure.
 
 ## Voice-DNA: persona from observed behavior
 

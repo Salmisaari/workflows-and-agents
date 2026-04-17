@@ -2,11 +2,19 @@
 
 Working notes for understanding how to build agentic workflows. The output of this exercise will be a **set of skills** for building/improving agentic systems, including a "starting skill" that bootstraps the design process.
 
+> **How to build, not what to build.** Notes on the *shape* of agentic workflows — architecture patterns, skill design, memory ownership, failure modes. Not a library of pre-built agents.
+
 ## Why this exists
 
 Goal: collect theory of agent construction from current best sources (articles + real-world implementations), then design the right shape of skills to make this knowledge actionable.
 
 The current `workflows` skill at `~/.claude/skills/workflows/SKILL.md` is the starting point. It conflates several concerns and uses overly rigid interaction gating. The rewrite (or split into multiple skills) will be informed by what's captured here.
+
+## Prerequisites
+
+These notes are harness- and model-agnostic — use your preferred LLM with tool use and whatever harness works for you (Claude Code, openclaw/nanoclaw, hermes-agent, or your own).
+
+Recommendation: build with the most capable model available (Opus/Sonnet class or equivalent), since design judgment benefits from headroom. Production can dispatch to smaller or public models per task class — cheaper tokens, narrower context windows, multi-modal where needed, and multi-LLM routing where each model handles what it's best at.
 
 ## Structure
 
@@ -80,7 +88,7 @@ An interpretation of what's most relevant right now for designing agentic workfl
 ## Status
 
 - [x] Theory captured from articles 1, 2
-- [x] Real-world patterns captured from nanoclaw, hermes-agent
+- [x] Real-world patterns captured from openclaw, hermes-agent
 - [x] Productive tensions surfaced and synthesized
 - [x] Pattern catalog distilled from real-world agents
 - [x] Boil-the-ocean heuristic added (scenario enumeration before architecture)
