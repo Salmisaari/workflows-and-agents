@@ -1,42 +1,46 @@
 # Tools
 
-How the model's decisions become side effects in the world.
+Tools are the component of harness anatomy that turns the model's decisions into side effects. Without them the model is a text predictor; with them it's an agent.
 
-## Tool categories
+Two categories cover almost everything.
 
-- **Built-in tools** — the runtime's core function set (Read, Edit, Glob, Grep, Write, Bash)
-- **MCP tools** — Model Context Protocol servers exposing external tool catalogs
+**Built-in tools** are the runtime's core set — in Claude Code that's `Read`, `Edit`, `Glob`, `Grep`, `Write`, `Bash`. Fast, stable, narrow.
 
-Results flow back into context as part of the next turn's injection.
+**MCP tools** come from Model Context Protocol servers — external catalogs that plug in at runtime, often exposing existing services (Gmail, Slack, Postgres).
 
-## Tool description checklist
-
-Five dimensions every tool description should cover:
-- WHAT — specific, no vague "helps with"
-- WHEN — triggers and contexts, including indirect signals
-- INPUTS — types, constraints, sensible defaults
-- RETURNS — concise vs detailed, error conditions with recovery
-- MASKING — summarize raw tool output before passing forward
+Results from either kind flow back into context on the next turn, so tool output shape matters as much as tool behavior.
 
 ## Narrow fast tools beat god-tools
 
-- **Anti-pattern:** 40+ tool definitions registered, eating half the context window. MCP god-tools with 2–5s round-trips. REST API wrappers turning every endpoint into a separate tool.
-- **Cost:** "3x the tokens, 3x the latency, 3x the failure rate."
+The pattern that shows up most in production: a small number of narrow, fast tools outperforms a large catalog of wide, slow ones.
 
-Concrete contrast:
-- **Bad:** Chrome MCP doing screenshot → find → click → wait → read = 15 seconds end-to-end.
-- **Good:** Playwright CLI doing each operation in 100ms = 75x faster.
+The anti-pattern is 40+ tool definitions eating half the context window before the conversation starts, with MCP god-tools taking 2–5 seconds per call. Cost: "3× the tokens, 3× the latency, 3× the failure rate."
 
-Principle: **software doesn't have to be precious anymore.** Build the narrow tool you need (often a 50-line CLI). Don't reach for the kitchen-sink integration. The cost of a custom tool is now near zero; the cost of a slow/bloated tool is paid on every invocation forever.
+## Tools are contracts, not APIs
 
-## Tool design principles
+An API assumes the caller can ask clarifying questions, read docs, or retry with different arguments after an error.
 
-Tools are **contracts**, not APIs. The agent cannot ask clarifying questions mid-call, so the description must carry the full usage story. Key rules:
+Tools don't work that way. The agent calls the tool exactly once per turn, with whatever arguments it inferred from the description, and moves on.
 
-- **Single clear purpose.** If a human engineer can't say definitively which tool to use, the agent can't either. Overlap → selection errors.
-- **Consolidate over proliferate.** Fewer comprehensive tools outperform many specialized ones. Target 10–20 tools; use namespacing if you must go higher.
-- **Descriptions are prompts.** They directly shape agent behavior. Every description must answer: *what it does*, *when to use it*, *what it returns*.
-- **Verb-noun naming.** `search_invoices`, not `invoiceSearch` or `find`. Include a prefix when namespacing (`gmail_search_messages`).
-- **Recovery-focused errors.** Error messages must state *what failed*, *why*, and *what to try next*. A stack trace isn't a signal; it's noise.
-- **Dual response formats.** Offer concise (default) and detailed variants so the agent can pick based on how much context it's already carrying.
-- **Iterate from observed failures.** Log which tool the agent reached for when it got the wrong result, and fix the description, not the agent.
+Tool descriptions are not documentation; **they are prompts**. A vague description doesn't result in "the agent asks for clarification" — it results in the wrong tool being invoked, or the right tool being invoked wrongly.
+
+Tools are built with five dimensions to make a description carry its weight:
+
+- **WHAT** — specific action. "Searches Gmail messages matching a query" is a contract; "works with email" is a hint the agent has to guess at.
+- **WHEN** — triggers and indirect signals ("user mentions an email thread, even without saying 'Gmail'").
+- **INPUTS** — types, constraints, sensible defaults.
+- **RETURNS** — output shape, concise vs. detailed variants, and what failure looks like with how to recover.
+- **MASKING** — summarize raw output before passing it forward. A 10KB log dump in context poisons the next turn; a three-line summary keeps attention sharp.
+
+## Design principles
+
+Rules that survive in production:
+
+- **Single clear purpose.** If an engineer can't say definitively which of two tools to use, the agent can't either. Overlap → selection errors. The fix is usually to merge or delete.
+- **Consolidate over proliferate.** Target maximum of 10–20 tools. If you need more, namespace (`gmail_search_messages`, `slack_send_message`) so the agent can filter by prefix.
+- **Verb-noun naming.** `search_invoices` tells the agent what this does. `invoiceSearch` is camelCase noise. Single-verb names (`find`, `get`) don't differentiate from siblings.
+- **Recovery-focused errors.** `ConnectionRefusedError: [Errno 111]` is noise. "Failed to reach the Gmail API: token expired. Try refreshing." tells the agent what to do next. Errors are part of the contract.
+- **Dual response formats.** Concise default, detailed variant on request. Cheap to offer, pays back repeatedly.
+- **Iterate from observed failures.** When the agent reaches for the wrong tool, the fix is almost always the description, not the agent.
+
+**The anti-pattern:** hard-coding tool behavior that should be in the description. Subtle rules ("never call this in a preview environment") belong in the description, not in a wrapper. The agent reads the description; wrapper logic is invisible to it.
