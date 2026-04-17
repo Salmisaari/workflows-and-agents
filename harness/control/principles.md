@@ -58,6 +58,12 @@ The difference between the two modes:
 
 Most expensive agent failures can be prevented by one of these two. Skipping both is how you get confidently-wrong output delivered without friction.
 
+## Concurrency and queueing
+
+Whenever the harness is invoked by multiple users or event streams in parallel, scheduling becomes a control concern. Three patterns recur. **Queue with concurrency limit** bounds max parallel executions to control cost and rate limits. **Per-key serialization** ensures that within a single conversation or thread, turns don't race each other — the key is usually conversation-id or user-id. **Backpressure** defines what happens when the system is overloaded: drop, defer, or surface "I'll get back to you" to the user.
+
+These belong squarely in the deterministic layer. Scheduling is not a judgment call the model should make — concurrency limits, queue ordering, and rate-limit decisions are rules the runtime enforces.
+
 ## Positioning sequential workflow
 
 A sequential workflow — ordered steps with quality checks between them — is one **control pattern** among many, not the default. In workflow design:

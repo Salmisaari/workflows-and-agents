@@ -16,14 +16,15 @@ Filesystem-backed memory is auditable, diff-able, grep-able. It's portable acros
 
 This is the answer to "how do I keep memory open?" — store it as files, version it with git, never put it behind an API.
 
-## Patterns from Claude Code
+## The wiki pattern
 
-Precedents worth borrowing:
+One concrete shape worth naming: an append-only log paired with stable topic pages. Each event lands in the log on arrival; topic pages curate the durable state on topics that matter. The log is cheap to write and grep; the topic pages are what the agent reads on the next turn. Trade: raw recency for curated relevance.
 
-- `CLAUDE.md` / `AGENTS.md` — auto-loaded context on session start.
-- `.claude/skills/*/SKILL.md` — progressive-disclosure skill bodies, loaded on invocation.
-- **Wiki pattern** — append-only log + topic pages.
-- **Auto-memory directory** — typed memory files indexed by `MEMORY.md`.
+## File-based IPC
+
+When agents need to coordinate — parent ↔ child, agent ↔ orchestrator, agent ↔ scheduled task — real systems prefer file-based IPC over direct method calls. The agent writes `tasks/new-task.json` to a watched directory; the orchestrator polls or watches, validates deterministically, and executes. Shared state is never modified directly.
+
+This produces a strongly-typed async boundary similar to microservice patterns, with three concrete benefits: every coordination action leaves an audit trail, any run can be replayed by re-reading the files, and the boundary is JSON — language-agnostic, not function calls.
 
 ## Audit-before-action durability
 

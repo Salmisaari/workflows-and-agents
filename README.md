@@ -33,10 +33,7 @@ workflow_skill/
 ├── tools/
 │   └── principles.md            narrow fast tools beat god-tools
 ├── harness/
-│   ├── anatomy.md          5-component model: context-injection, control, tools, observe, persist
-│   ├── openness-spectrum.md  control surface from open → managed
-│   ├── runtime-sizing.md   lean runtime + content-rich skills
-│   ├── runtime-patterns.md   persistent vs container, multi-channel, IPC, compression, providers
+│   ├── principles.md       5-component model + harness shape (persistent vs container, multi-channel routing)
 │   ├── context-injection/principles.md
 │   ├── control/principles.md    compaction, orchestration, ralph loops
 │   ├── observe-verify/principles.md

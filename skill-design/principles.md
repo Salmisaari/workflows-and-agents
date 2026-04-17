@@ -40,9 +40,9 @@ Four steps:
 
 ## Skills are permanent upgrades
 
-A working skill never degrades. It compounds. When the next model drops, every skill gets better automatically — judgment steps improve, deterministic steps stay reliable.
+A working skill never degrades. It compounds. When the next model drops, every skill gets better automatically — judgment steps improve, deterministic steps stay reliable. And because skills are plain markdown files, they're portable and auditable in a way code-encoded logic isn't: you can read them, diff them, version them, and move them between harnesses, providers, or models without rewriting. Compare that to alternatives where logic is buried in Python wrappers, MCP server code, or proprietary platforms — those rot when the model or the provider changes.
 
-This is the mechanism behind the 100× productivity gap. Not a smarter model. The discipline of codifying every repeatable judgment as a skill.
+This is the mechanism behind the 100× productivity gap. Not a smarter model. The discipline of codifying every repeatable judgment as a skill — in a form that survives model, provider, and harness changes.
 
 ## The learning loop
 

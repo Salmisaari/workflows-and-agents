@@ -36,6 +36,12 @@ The synthesis of two foundational framings: "own your harness / own your memory"
 └──────────────────────────────────────────────────────────────┘
 ```
 
+### The lean runtime in practice
+
+The sub 200-LOC figure isn't aspirational. A runtime that reads/writes files, manages context, and runs a model loop genuinely fits in that budget — the rest is markdown skills outside the runtime. The lean property also survives heavy-execution shapes: a 200-LOC orchestrator that spawns container-per-execution agents stays lean at the runtime layer even though each container runs a full agent loop inside. What stays small is the runtime itself, not the total system.
+
+The anti-pattern is the opposite: 40+ tool definitions eating half the context window, "god-tools" via MCP with multi-second round-trips per call, REST API wrappers that turn every endpoint into a separate tool. The concrete contrast: Chrome MCP doing screenshot → find → click → wait → read takes 15 seconds; a Playwright CLI doing each step in 100ms is 75× faster. The lesson generalizes — software doesn't have to be precious anymore. Build exactly the narrow, fast tool you need; don't reach for the kitchen-sink integration when a 50-line CLI does it.
+
 ## How this satisfies both framings
 
 | Concern | "Own your memory" view | "Lean runtime" view | This architecture |
@@ -45,6 +51,28 @@ The synthesis of two foundational framings: "own your harness / own your memory"
 | Lock-in risk? | Avoid closed harnesses / managed agents | Don't use MCP god-tools either | ✅ |
 | Where does intelligence live? | (Not addressed directly) | Latent space (the model) | Skills frame *how* the model thinks |
 | Where does precision live? | (Not addressed directly) | Deterministic code | Application layer |
+
+The two framings aren't in conflict — a lean runtime with content-rich skills is what an "open harness" looks like in practice.
+
+## Model independence
+
+"Model-agnostic" is easy to claim and hard to make real. Two practical mechanisms carry the weight.
+
+**Provider abstraction** is what lets you swap the model without rewriting code. An internal canonical message format sits at the center, with per-provider adapters translating to/from each API (Anthropic Messages, OpenAI Chat Completions, Gemini). Tool schemas normalize across providers; prompt-engineering quirks stay isolated in the adapter layer. Without this, "model-agnostic" is aspirational — you can point at the swap, but you can't do it.
+
+**Multi-model dispatch by task** picks up from there. A serious harness rarely uses one model for everything — entity extraction, heavy reasoning, bulk batch, vision, and long-context recall all have different cost/latency/quality profiles.
+
+| Task class | Typical choice | Why |
+|------------|----------------|-----|
+| Entity extraction, classification, routing | Smallest available (Haiku, Flash, mini) | Narrow-task accuracy is enough |
+| Heavy synthesis, judgment, reasoning | Largest available | Latent-space work where capability pays off |
+| Bulk batch processing | Mid-tier with batch API | Cost dominates, latency irrelevant |
+| Vision / document parsing | Vision-capable provider | Capability gating, not preference |
+| Long-context recall | Long-context model, cheapest input | Context window dictates choice |
+
+Implementation is a `dispatch(task_type, payload) → model_id` function. Skill metadata can declare a preferred class; the runtime resolves to a concrete model. Combined with provider abstraction, this gives the harness real model independence — new models drop, individual task classes upgrade, skills stay unchanged.
+
+The anti-pattern: hard-coding model names in skill files. That's the shape that ages worst.
 
 ## The latent vs deterministic principle (cross-cutting)
 
