@@ -4,21 +4,24 @@ Start here. Map of the repo and rules for where things go.
 
 ## Purpose
 
-Theory for designing agentic workflows. Example skill files in `examples/` show how the theory applies in practice.
+A skill set for designing agentic workflows. `SKILL.md` at the root is the entry point (`design-workflow`). Sub-skills in `sub-skills/` are invoked directly or routed to by the main skill. Layer folders hold the theory the skills stand on.
 
 ## Layout
 
 | Path | Contains |
 |------|----------|
 | `README.md` | Human narrative: why this exists, conclusions |
+| `SKILL.md` | Main skill — `design-workflow` entry point (diagnostic + pattern catalog + routing) |
 | `architecture.md` | Cross-layer synthesis (3-layer model, pattern catalog, design DNA, stop-at-ambiguity) |
-| `persona/`, `memory/`, `skills/`, `tools/`, `resolvers/` | Layer theory — `principles.md` per folder |
+| `persona/`, `memory/`, `skill-design/`, `tools/`, `resolvers/` | Layer theory — `principles.md` per folder |
 | `harness/*.md` | Runtime-shape dimensions — one file per dimension (anatomy, openness-spectrum, runtime-sizing, runtime-patterns) |
 | `harness/context-injection/`, `harness/control/`, `harness/observe-verify/`, `harness/persist/` | 5-component anatomy — `principles.md` per folder |
+| `sub-skills/<name>/SKILL.md` | Invokable sub-skills — `scenarios`, `constraints`, `memory-system`, `workflow-ux`, `workflow-review`, `voice-dna` |
 
 ## File conventions
 
 - `principles.md` — synthesized theory for a named topic
+- `SKILL.md` — invokable skill with frontmatter (name, description) and procedure body
 - No author attributions in body (hurts downstream skill performance)
 
 ## Routing rules
@@ -26,6 +29,7 @@ Theory for designing agentic workflows. Example skill files in `examples/` show 
 - Cross-layer insight → `architecture.md`
 - Layer-scoped insight → that layer's `principles.md`
 - Component-scoped insight → that component's `principles.md`
+- Invokable procedure → `sub-skills/<name>/SKILL.md`
 - New top-level folder → update this file first, then create
 - Narrative / conclusions → `README.md`, not here
 

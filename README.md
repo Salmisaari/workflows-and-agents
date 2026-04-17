@@ -21,12 +21,14 @@ Each folder corresponds to a dimension of agent theory. Files within capture pri
 ```
 workflow_skill/
 ├── README.md               ← you are here
+├── SKILL.md                ← main skill: design-workflow (diagnostic + pattern catalog + routing)
 ├── architecture.md         ← synthesized 3-layer model + latent/deterministic principle
+│
 ├── persona/
 │   └── principles.md       multi-layer model (identity + soul + skin + steering), voice-DNA
 ├── memory/
 │   └── principles.md       memory IS harness, types, compression, search-augmented, providers
-├── skills/
+├── skill-design/
 │   └── principles.md       method-call pattern, encoding spectrum, learning loop, diarization
 ├── tools/
 │   └── principles.md            narrow fast tools beat god-tools
@@ -41,8 +43,14 @@ workflow_skill/
 │   └── persist/principles.md    files as the cleanest long-term memory
 ├── resolvers/
 │   └── principles.md            routing tables for context, just-in-time injection
-└── examples/
-    └── voice-dna.md             worked example of a concrete skill
+│
+└── sub-skills/             ← invokable skills called directly or routed to by SKILL.md
+    ├── scenarios/SKILL.md       enumerate every realistic input — happy path is not the spec
+    ├── constraints/SKILL.md     define the mutable / immutable boundary
+    ├── memory-system/SKILL.md   walk the seven memory questions
+    ├── workflow-ux/SKILL.md     human-in-the-loop surface, latency, escalation
+    ├── workflow-review/SKILL.md audit (5 dimensions) + debug (5 context-degradation modes)
+    └── voice-dna/SKILL.md       clone a user's communication style from real samples
 ```
 
 ## Approach
