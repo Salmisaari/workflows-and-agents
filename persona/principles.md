@@ -57,13 +57,47 @@ Some real-world systems (e.g., OpenClaw orchestrators) deliberately have **only 
 
 A specialization of persona engineering: instead of authoring SOUL.md by hand, **derive it from a corpus of the user's own writing/speech**. The result is an agent that writes "in the user's voice."
 
-Mechanism (general shape):
-1. Sample a corpus of user-authored content (Slack messages, docs, emails).
-2. Extract patterns: sentence length, hedge words, punctuation habits, opener/closer conventions, vocabulary range.
-3. Encode the pattern as SOUL.md / voice-DNA file.
+### What voice-DNA actually captures
+
+The naïve view: voice = vocabulary and sentence length. A working voice-DNA model covers four layers:
+
+| Layer | What it encodes | Examples |
+|-------|-----------------|----------|
+| **Surface** | How they write | Sentence rhythm, lexical fingerprint, typo and punctuation signatures, cadence |
+| **Interpersonal** | How they relate | Pragmatic directness, emotional texture, audience adaptation between contexts |
+| **Cognitive** | How they think | Lead with conclusion or build to it, tolerance for ambiguity, certainty calibration |
+| **Depth** | Who they are | Attribution patterns, motivational signature, values that leak through repeatedly |
+
+Only the surface layer produces a caricature. All four produce an agent that writes like the person on a good day.
+
+### Constants vs. adaptations
+
+Voice is a constant core plus channel-dependent deltas. A working profile maps both:
+
+- **Constants** appear everywhere — Slack, investor email, texts. These are the signature.
+- **Adaptations** are how register shifts by audience and channel. The delta itself is part of the signature.
+
+### Calibration: amplify / keep / soften
+
+Not every real pattern should be amplified in generated output. The useful split is three-way:
+
+- **Amplify** — patterns from the person's best communication (clear, warm, decisive). Weight these higher.
+- **Keep** — characteristic patterns that are neutral or positive (typos that signal urgency, bluntness that reads as confidence). Stripping them makes output sterile.
+- **Soften** — patterns that appear under stress or fatigue the user would want less of (over-hedging, terseness-as-curtness). Reduce frequency, don't eliminate — eliminating breaks the voice.
+
+The counter-intuitive move: many "imperfect" patterns belong in **Keep**, not Soften.
+
+### Mechanism (general shape)
+
+1. Sample user-authored content across channels (Slack, email, long-form). More channels = more dimensions resolved. Preserve samples exactly as written — typos are signal, not noise.
+2. Analyze across the four layers above.
+3. Encode the pattern as a SOUL.md / voice-DNA file with constants, adaptations, signature patterns, and a calibration table.
 4. Inject as part of the persona stack.
+5. Update the profile when the user edits generated drafts — edits are direct signal about where the profile is off.
 
 This collapses the "teach the agent to sound like me" problem into the same persona-as-data architecture — no special runtime needed.
+
+A concrete skill-file implementation is at `drafts/voice-dna.md`.
 
 ## Subagent persona policy
 
