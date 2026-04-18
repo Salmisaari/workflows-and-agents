@@ -27,7 +27,7 @@ workflow_skill/
 ├── persona/
 │   └── principles.md       multi-layer model (identity + soul + skin + steering), voice-DNA
 ├── memory/
-│   └── principles.md       memory IS harness, types, compression, search-augmented, providers
+│   └── principles.md       memory IS harness, types, compaction pipeline, search-augmented, providers
 ├── skill-design/
 │   └── principles.md       method-call pattern, encoding spectrum, learning loop, diarization
 ├── tools/
@@ -35,7 +35,7 @@ workflow_skill/
 ├── harness/
 │   ├── principles.md       5-component model + harness shape (persistent vs container, multi-channel routing)
 │   ├── context-injection/principles.md
-│   ├── control/principles.md    compaction, orchestration, ralph loops
+│   ├── control/principles.md    compaction, orchestration, ralph loops, permission spectrum
 │   ├── observe-verify/principles.md
 │   └── persist/principles.md    files as the cleanest long-term memory
 ├── resolvers/
@@ -62,13 +62,13 @@ An interpretation of what's most relevant right now for designing agentic workfl
 4. **Latent vs deterministic split is the most important boundary.** Wrong-side placement is the most common mistake.
 5. **Persona is its own layer**, separate from operational identity, memory, and skills. Production systems treat it as stacked, independently editable data files.
 6. **Skills come in (at least) three encodings** — method-call, declarative reference, branch+setup — each with different ergonomics.
-7. **Compression strategy is a meaningful harness choice** — drop / head-tail / iterative summary / external recall, each with different tradeoffs.
+7. **Compaction is a pipeline, not a single choice** — cheap deterministic trims run before costly model-generated compression. Claude Code's pipeline (Budget Reduction → Snip → Microcompact → Context Collapse → Auto-compact) is the canonical example; the question is which layers to include and in what order, not which single strategy to pick.
 8. **Self-improving skills exist** but need scope boundaries to avoid drift and rule rot.
 9. **Provider abstraction** is the practical mechanism behind model-agnostic claims; without it, model-agnostic is aspirational.
 10. **"Agent workflow" is not one shape.** Six recurring patterns: pipeline, state machine, scheduled digest, REPL/ReAct, hydrated agent loop, full agent loop. Picking the wrong one is a top cause of fragile systems.
 11. **Boil-the-ocean before architecture.** For natural-language workflows, exhaustive scenario enumeration is non-skippable. The happy path is never the spec.
 12. **Constraints enable autonomy.** Every workflow needs an explicit mutable / immutable boundary. Ground truth and evaluation must live in the immutable zone, or the agent can "improve away" its own checks.
-13. **Confidence-routed branching (auto / draft / clarify)** is a saner default than "agent acts directly" for any write action with real cost.
+13. **Graduated trust, not "agent acts directly."** Confidence-routed branching (auto / draft / clarify) is a UX slice of a fuller permission spectrum (Plan / Default / AcceptEdits / Auto / DontAsk / BypassPermissions / Bubble). Deny-first evaluation and reversibility-weighted risk are the cross-cutting rules that keep the spectrum coherent.
 14. **Audit-before-action** persistence: write the intent to a `pending/` file before the side-effecting tool call. Crash-safety, dedup, and human-review surface all fall out for free.
 15. **Pre-hydration beats letting the model fetch.** When the entity is known, hydrate once and inject; don't make the model spend turns on tool calls for context it should have had on turn one.
 16. **Multi-model dispatch by task class** is how serious harnesses get cost/latency right. Hard-coded model names in skill files age worst.
@@ -80,3 +80,5 @@ An interpretation of what's most relevant right now for designing agentic workfl
 22. **Stop-at-ambiguity is a first-class runtime discipline**, not a prompt suggestion. The #1 expensive failure mode is agents confidently going the wrong way at an ambiguous decision point. Required: confidence calibration, plausible-alternatives listing, stop-behavior explicit in system prompt.
 23. **Review has two modes, one skill.** Proactive audit (5 dimensions: strategic fit / UX / technical / maintainability / safety) and reactive debug (5 context-degradation modes + ambiguity). Both answer "which dimension failed?" — different entry points to the same diagnostic.
 24. **Maintainability is the silently-decaying dimension** for agent workflows. Skill-file sprawl, opaque memory choices, untracked prompt tweaks kill the workflow before a user complaint ever shows up.
+25. **Foundational values precede architecture.** Five recur: human decision authority, safety/security/privacy, reliable execution, capability amplification, contextual adaptability. They trade off against each other; honest design names which it prioritizes and which it concedes rather than claiming to optimize all five.
+26. **Extensibility is a four-mechanism surface** (MCP servers / plugins / skills / hooks), not one thing. Judgment → skill, integration → MCP, enforcement → hook, distributable bundle → plugin. Well-designed capabilities combine two or more.

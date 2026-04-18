@@ -58,6 +58,26 @@ The difference between the two modes:
 
 Most expensive agent failures can be prevented by one of these two. Skipping both is how you get confidently-wrong output delivered without friction.
 
+## Permission modes and graduated trust
+
+Confidence-routed branching addresses a single action. A fuller harness needs a *graduated trust spectrum* — a system-wide mode that shifts the default for every action, from "require approval for everything" to "act freely within boundaries." Claude Code's seven-mode taxonomy is the reference point worth learning:
+
+| Mode | Default behavior |
+|------|------------------|
+| **Plan** | No execution; user must approve the plan before anything runs |
+| **Default** | Standard interactive — most operations require approval |
+| **AcceptEdits** | Auto-approves filesystem edits and safe shell commands; others prompt |
+| **Auto** | ML-classifier evaluates anything not on the fast-path allow list |
+| **DontAsk** | No prompting, but deny rules still enforced |
+| **BypassPermissions** | Minimal prompting; only safety-critical checks remain |
+| **Bubble** | Internal — subagent permission escalation surfaces to the parent terminal |
+
+The auto/draft/clarify tiers above are a simplified UX slice of the same space: auto ≈ DontAsk (low friction, still bounded), draft ≈ Default (approval required), clarify ≈ Plan (nothing runs until discussion). The seven-mode version adds finer graduation (AcceptEdits for the common "edits are fine, network is not" case) and the bubble mechanism for subagent escalation.
+
+Two design rules keep the spectrum coherent. **Deny-first evaluation** means that when an action matches both an allow rule and a deny rule, the deny wins — regardless of specificity. This is the usual access-control convention and it matters most under high-autonomy modes; a broadly-allowed Auto mode with a specific deny list is safer than the reverse, because the deny list is the bright line the agent cannot cross. **Reversibility-weighted risk** means not all actions deserve the same oversight — reversible actions (local file edits tracked in git, sandboxed runs) tolerate lighter gating than irreversible ones (external API writes, emails sent, payments executed). A mature permission system weights its prompting by reversibility, not by tool category; writing a file and wiring a payment shouldn't get the same prompt.
+
+Together, the graduated spectrum + deny-first + reversibility weighting let a harness start conservative and earn trust over time. Longitudinal data on real Claude Code sessions shows users moving from ~20% auto-approval early on to 40%+ by hundreds of sessions — the permission system evolves with the relationship, it doesn't stay static.
+
 ## Concurrency and queueing
 
 Whenever the harness is invoked by multiple users or event streams in parallel, scheduling becomes a control concern. Three patterns recur. **Queue with concurrency limit** bounds max parallel executions to control cost and rate limits. **Per-key serialization** ensures that within a single conversation or thread, turns don't race each other — the key is usually conversation-id or user-id. **Backpressure** defines what happens when the system is overloaded: drop, defer, or surface "I'll get back to you" to the user.

@@ -72,6 +72,8 @@ The two framings aren't in conflict — a lean runtime with content-rich skills 
 
 Implementation is a `dispatch(task_type, payload) → model_id` function. Skill metadata can declare a preferred class; the runtime resolves to a concrete model. Combined with provider abstraction, this gives the harness real model independence — new models drop, individual task classes upgrade, skills stay unchanged.
 
+**Harness lock-in is the residual constraint.** Provider abstraction and multi-model dispatch make swapping *possible* without making it *equivalent*. Models are increasingly post-trained with specific harnesses in the loop — the same model in a different harness can behave meaningfully differently on the same task. Tools whose argument format the training data leaned on hurt performance when changed: a file-editing tool with a specific patch format baked into the training set will underperform on a different patch format, even for a model that "can" handle arbitrary diffs. Public benchmarks confirm it at the harness level — the same model scores very differently across harnesses on the same task set. The practical posture: treat model independence as a gradient (how much rewriting a swap would require) rather than a binary. The abstraction boundary stays valuable because it makes swaps cheap; expect some behavior drift on the other side.
+
 The anti-pattern: hard-coding model names in skill files. That's the shape that ages worst.
 
 ## The latent vs deterministic principle (cross-cutting)
@@ -233,6 +235,22 @@ The principle to enforce in workflow design:
 4. **Revisit constraints, but as a human-driven step.** Don't let the agent loosen its own boundaries; that's how scope creep becomes silent.
 
 This pairs with the "audit-before-action" pattern in `harness/persist/principles.md` (the file system is the immutable record of what happened) and with confidence-routed branching in `harness/control/principles.md` (the routing logic is immutable; the model only contributes a confidence score).
+
+## Foundational values
+
+Before architecture choices come the values the architecture has to preserve. Five recur across agentic workflow design — missing any one produces systems that work technically but feel wrong, unsafe, or brittle in production.
+
+**Human decision authority.** The human retains ultimate control — observing actions in real time, approving or rejecting operations, interrupting in-progress tasks, auditing afterward. Architectural implication: decision points must be legible, and the substrate of those decisions (plans, diffs, drafts) persisted so the human can inspect what's about to happen.
+
+**Safety, security, and privacy.** The system protects humans, code, data, and infrastructure from harm *even when the human is inattentive or makes mistakes.* Distinct from authority — authority is the user's right to decide; safety is the guarantee that a confused agent can't cause irreversible damage while the user isn't watching. Sandbox isolation, deny-first permission evaluation, reversibility-weighted risk, and audit-before-action all serve this value.
+
+**Reliable execution.** The agent does what the user actually meant, stays coherent over time, and supports verifying its work — across single turns and long horizons. The three-layer architecture (lean runtime + deterministic tooling for what must be reliable, latent judgment for what can't be) is this value made concrete.
+
+**Capability amplification.** The system has to materially increase what the user can accomplish per unit effort; below that, friction overwhelms value. This is the value that pushes back against excessive safety — overly cautious gating turns capability amplification into capability attenuation. Reversibility-weighted risk is the resolution: gate heavily where reversal is expensive, lightly where it's cheap.
+
+**Contextual adaptability.** The system fits the user's specific context and evolves as the relationship matures. Transparent file-based configuration (`CLAUDE.md`, skills, MCP, hooks, plugins) is the mechanism — the user can edit the system without API calls, and the system's behavior is diffable. Permission spectrums graduate over time because trust is earned through accumulated context, not decreed at setup.
+
+These five trade off against each other — more authority requires more friction (reducing capability amplification); more adaptability can weaken safety if hooks are unconstrained. A workflow design that names the trade-offs it's making across these values is a more honest design than one that claims to optimize all five.
 
 ## Design DNA
 

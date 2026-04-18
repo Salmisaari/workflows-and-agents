@@ -8,6 +8,21 @@ A reusable markdown document that teaches the model **how** to do something. The
 
 > "The skill describes a process of judgment. The invocation supplies the world."
 
+## Skills within the extensibility space
+
+Skills are one of four extensibility mechanisms a harness typically exposes. Each operates at a different layer and serves different needs:
+
+| Mechanism | What it extends | Cost to add | When to reach for it |
+|-----------|-----------------|-------------|-----------------------|
+| **MCP servers** | The tool set, via standardized protocol (stdio, SSE, HTTP, WebSocket) | Higher — running a server, tool schemas, permission coverage | External system integration where the capability is already a service |
+| **Plugins** | Bundled components registered into the runtime at install time | Medium — installable unit with tools, hooks, config | Reusable capability packages distributed across projects or teams |
+| **Skills** | Domain-specific instructions and procedures, loaded as markdown | Low — just a file | Reusable *judgment* procedures; anything the user might ask twice |
+| **Hooks** | Lifecycle interception — block, rewrite, or annotate tool calls, permissions, and model output | Low — a shell command or function wired to an event | Deterministic enforcement at specific points in the loop (e.g., pre-commit lint, post-tool-call audit) |
+
+Claude Code exposes all four, with the hook surface alone spanning 27 distinct lifecycle events — hooks are not a single interception point but a surface. Skills are the mechanism this document focuses on because they're the highest-leverage place to codify judgment — but a well-designed capability often uses two or more: a skill describes the procedure, a hook enforces a deterministic check partway through, an MCP server provides the tool the procedure calls.
+
+The deciding question per capability: is this *judgment* (→ skill), *integration* (→ MCP), *enforcement* (→ hook), or *a distributable bundle* of the above (→ plugin)?
+
 ## Skill-as-method-call
 
 The defining insight: a skill takes **parameters**. Same procedure, different arguments → different capability.

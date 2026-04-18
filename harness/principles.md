@@ -2,13 +2,17 @@
 
 ## What is a harness?
 
-The harness is everything around the LLM that turns it into an agent. The model reasons and decides; the harness handles everything else.
+**Agent = Model + Harness.** If you're not the model, you're the harness.
 
-An agent, by definition, is an LLM interacting with tools and other sources of data. There is always a system around the LLM to facilitate that interaction.
-
-Even web search "built into" OpenAI/Anthropic APIs is a harness — a lightweight one — sitting in front of the model, calling search via tool calling.
+The harness is everything around the LLM that turns it into an agent. The model reasons and decides; the harness handles everything else — state across turns, tool execution, enforceable constraints, access to anything outside its context window. A raw model takes text/images/audio and returns text; that's it. Everything else is harness — including the lightweight shim behind "built-in" web search in an API, which is still a tool-calling loop with a different label.
 
 **Scale matters:** production harnesses are substantial — often hundreds of thousands of lines of code — while the model is hosted separately. The harness is where the system's behavior actually lives.
+
+## Working backwards from desired behavior
+
+Each component of a harness earns its place by filling a gap between what the model does natively and what an agent needs to do. The design move is: name the behavior, then ask what piece of the harness has to provide it. Durable state across sessions calls for filesystem + git. Autonomous code execution calls for bash + a sandbox. Access to post-training knowledge calls for web search or MCPs. Holding performance on long tasks calls for compaction and progressive-disclosure skills. Long-horizon coherence calls for planning, verification, and — when needed — ralph loops.
+
+The five-component anatomy below is the same set reorganized around *where in the loop* each piece lives (what the model sees, when it runs, what it calls, how it verifies, what persists). Working backwards from behavior is the move when designing a new harness; the five-component cut is the move when debugging an existing one.
 
 ## Harness components
 
@@ -60,6 +64,14 @@ Beyond the components, the first shape decision is whether the runtime is one lo
 | **Security** | Shared process, weaker isolation | Strong isolation per execution, easier credential vaulting |
 | **Auditability** | Logs only | Each execution is a discrete unit with bounded scope |
 | **Cost shape** | Predictable per-session | Pays per-execution overhead always |
+
+## Sandboxes and default environments
+
+When the agent runs code or shell commands, it does so in an environment the harness configures — and those configuration choices shape behavior as much as the model or tool set does. The harness is responsible for isolation (running code where a mistake can't damage the host, via containers, ephemeral VMs, command allow-listing, and network egress controls); default tooling (what's pre-installed on turn one is what the agent reaches for — language runtimes, git, test runners, browsers, package managers); and observability handles (stdout/stderr, exit codes, diffs, screenshots, logs — without these the agent can't close the loop on its own actions).
+
+A subtle point about default tooling: a model that could theoretically shell out to install Python won't, if the task is short-horizon and Python isn't already there. Defaults are prompts. The observability side matters just as much — the environment must surface what happened after each tool call, or the agent's next decision is made on stale information.
+
+Sandboxing lives naturally inside the container-per-execution shape but isn't limited to it; persistent agents also run in configured environments. The rule of thumb: for any tool that could touch shared state or the network, ask what prevents a confused agent from causing irreversible damage, and bake the answer into the environment rather than relying on prompting.
 
 ## Multi-channel routing
 

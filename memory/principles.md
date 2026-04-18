@@ -42,18 +42,20 @@ Memory design determines portability:
 
 The principle: if you can't `git diff` your memory, you don't really own it.
 
-## Compression strategies
+## Compaction pipeline
 
-When the conversation buffer approaches the context window, the harness must compact. The choice is meaningful — it shapes what the agent can reason about later:
+When the conversation buffer approaches the context window, the harness must compact. Well-designed systems don't pick one strategy — they run a *pipeline* of compaction layers where cheap operations run before costly ones, each peeling off context pressure until the budget fits. Claude Code's pipeline is the canonical example, running Budget Reduction (per-message size caps on tool results) → Snip (temporal trim of old turns) → Microcompact (fine-grained time- and cache-aware compression) → Context Collapse (read-time projection using summaries in place of original text) → Auto-compact (model-generated semantic compression as the last resort) in order.
 
-| Strategy | Mechanism | Loses | Preserves |
-|----------|-----------|-------|-----------|
+The four underlying compression shapes are composable and recur across systems:
+
+| Shape | Mechanism | Loses | Preserves |
+|-------|-----------|-------|-----------|
 | **Drop oldest** | Truncate past N turns | Everything beyond the window | Recency only |
 | **Head/tail protect** | Keep system prompt + recent N tokens; summarize the middle | Mid-conversation detail | Identity + recent state |
 | **Iterative summary** | Old summary + new turns → new summary on each compression | Original phrasing | Cumulative intent and progress |
 | **External recall** | Push old turns to searchable store; recall on demand via tool | In-context fluency on old material | Everything, if the agent asks |
 
-Iterative summary preserves more than head/tail across very long sessions but risks **summary drift** — each pass is a lossy translation of the prior one. External recall is the most robust but requires the agent to know when to search — a judgment call that costs turns.
+Iterative summary preserves more than head/tail across very long sessions but risks **summary drift** — each pass is a lossy translation of the prior one. External recall is the most robust but requires the agent to know when to search — a judgment call that costs turns. The pipeline framing is the important move: cheap deterministic trims run first, summary-based compression only when necessary, model-generated semantic compaction as the last resort. Picking any single strategy as "the" compaction approach misses that they're complementary, not alternatives.
 
 ## Search-augmented memory
 
