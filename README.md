@@ -4,6 +4,22 @@ A skill set and theory base for designing agentic workflows. The main skill (`SK
 
 > **How to build, not what to build.** This repo is about the *shape* of agentic workflows — architecture patterns, skill design, memory ownership, failure modes. Not a library of pre-built agents.
 
+## Why this exists
+
+Working notes evolving over time. The goal is fewer unexplainable agent failures by setting the right foundations early — explicit scenario enumeration, a clean mutable / immutable boundary, memory that persists as plain files you can diff, graduated trust instead of "agent acts directly." Most agent problems aren't model problems; they're architecture decisions that were never made deliberately.
+
+The same foundation scales from customer-facing work to internal operations. Workflows built on it have handled:
+
+- Automating accounting
+- Order handling
+- Resolving customer-support situations
+- Taking internal notes on tasks
+- Coordinating priorities across teams
+- Reading analytics and flagging anomalies
+- Shipping new features
+
+The shape of each workflow changes; the design sequence doesn't.
+
 ## How to use this repo
 
 1. Read [`CLAUDE.md`](CLAUDE.md) for the repo map, then [`architecture.md`](architecture.md) for the synthesis.
