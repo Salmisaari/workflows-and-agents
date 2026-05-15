@@ -32,6 +32,16 @@ Tools are built with five dimensions to make a description carry its weight:
 - **RETURNS** — output shape, concise vs. detailed variants, and what failure looks like with how to recover.
 - **MASKING** — summarize raw output before passing it forward. A 10KB log dump in context poisons the next turn; a three-line summary keeps attention sharp.
 
+## Tools live above the cache breakpoint
+
+The tool surface — names, descriptions, and input schemas exposed this session — sits above the prompt-cache breakpoint, in the same stable prefix as the system prompt (see `../harness/context-injection/principles.md`). After the first turn the cache reads this prefix at a fraction of full input cost and latency. The implication is that changing the tool surface is not a local quality change; it is a cache-invalidation event for every subsequent call in every active session.
+
+Dynamic tool loading — varying which tools are exposed turn by turn based on intent classification — sounds elegant and is usually the wrong call in production. Every tool-set change forces the rest of the thread to pay full input cost, which dwarfs the token savings from showing fewer tools. The pattern that holds up is the opposite: define a stable surface up front, accept that some tools will be unused in some sessions, and pay the small attention cost rather than the large cache cost.
+
+Two operational consequences follow. **Tool surface changes are blast-radius events** — renaming a tool, reordering parameters, or rewriting a description ripples through every cached conversation and every downstream eval, so treat changes like a schema migration, not a docstring edit. And **regression-test tool changes before shipping** — the model's tool selection on path A can shift when you "improve" a tool on path B, so run the eval set that exercises adjacent tools whenever you touch the surface. "I just fixed the description" hides the most expensive regressions.
+
+The cache principle pairs with the design principles below: "Single clear purpose" keeps overlap out of the surface; cache stability keeps the surface stable once it's right.
+
 ## Design principles
 
 Rules that survive in production:
