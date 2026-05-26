@@ -36,6 +36,12 @@ The synthesis of two foundational framings: "own your harness / own your memory"
 └──────────────────────────────────────────────────────────────┘
 ```
 
+### Skill compactness and portability (empirical)
+
+Content-rich does not mean content-long. Optimized skill files converge to a median of ~920 tokens (SkillOpt, 2026). The range is 379–1,995 tokens across six benchmarks, with the shortest skill (379 tokens, one accepted edit) gaining +29.3 points. Most skill files in the wild are bloated because length feels like effort — the measured evidence says high signal density at short length wins.
+
+Portability is equally concrete. A skill optimized inside one harness transfers to another with most of its value intact: a Codex-trained SpreadsheetBench skill ported to Claude Code scored +59.7 points (22.1 → 81.8). Across 52 model/benchmark/harness combinations, SkillOpt achieved best-or-tied results on all 52 cells. A frozen GPT-5.4-nano with an optimized skill approximated frontier model behavior on procedural benchmarks — cheaper, portable, inspectable, zero inference-time cost. Procedural knowledge encoded in a markdown file is more general than the runtime that produced it.
+
 ### The lean runtime in practice
 
 The sub 200-LOC figure isn't aspirational. A runtime that reads/writes files, manages context, and runs a model loop genuinely fits in that budget — the rest is markdown skills outside the runtime. The lean property also survives heavy-execution shapes: a 200-LOC orchestrator that spawns container-per-execution agents stays lean at the runtime layer even though each container runs a full agent loop inside. What stays small is the runtime itself, not the total system.
@@ -235,6 +241,16 @@ The principle to enforce in workflow design:
 4. **Revisit constraints, but as a human-driven step.** Don't let the agent loosen its own boundaries; that's how scope creep becomes silent.
 
 This pairs with the "audit-before-action" pattern in `harness/persist/principles.md` (the file system is the immutable record of what happened) and with confidence-routed branching in `harness/control/principles.md` (the routing logic is immutable; the model only contributes a confidence score).
+
+## Protected-section invariant (within-file constraints)
+
+The constraints principle above draws the mutable/immutable boundary at the system level: the agent edits the artifact, not the eval harness. The same boundary applies *within* a skill file when the file is subject to iterative improvement — whether by an optimizer, a self-editing loop, or a human revision cycle.
+
+The mechanism is a slow/fast split. Fast edits are step-level corrections: bounded in count (a textual learning rate), proposed from recent evidence, accepted only when a held-out validation gate shows strict improvement. Slow updates are epoch-level lessons: longitudinal patterns observed across many runs, stored in a protected section that fast edits cannot overwrite. The slow section is immutable within an optimization pass; it changes only through a separate, gated process that samples broadly before proposing.
+
+Empirical evidence (SkillOpt, 2026) measured the cost of removing this guarantee at -22.5 points on SpreadsheetBench — the most expensive single ablation in their study. The mechanism matters because fast iteration is greedy: without a protected zone, a sequence of locally-improving edits can overwrite a globally-important lesson that only becomes visible over many runs. The invariant prevents the optimizer from trading slow-won insight for fast-loop convenience.
+
+This generalizes beyond formal optimization. Any skill file that gets revised over time — by an agent, by a human, by a scheduled review — benefits from marking which sections carry hard-won lessons (slow) and which sections are working hypotheses open to change (fast). Convention is fragile; a structural marker (a frontmatter field, a named section, a comment fence) makes the boundary visible to every future editor.
 
 ## Foundational values
 

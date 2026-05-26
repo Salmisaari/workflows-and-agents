@@ -78,6 +78,24 @@ Two design rules keep the spectrum coherent. **Deny-first evaluation** means tha
 
 Together, the graduated spectrum + deny-first + reversibility weighting let a harness start conservative and earn trust over time. Longitudinal data on real Claude Code sessions shows users moving from ~20% auto-approval early on to 40%+ by hundreds of sessions — the permission system evolves with the relationship, it doesn't stay static.
 
+## Bounded self-editing
+
+When an agent iteratively improves its own artifacts — skill files, prompts, plans, configuration — the edit process itself needs control mechanisms. Unconstrained self-editing degrades quality: the agent rewrites too aggressively, overwriting what works to fix what doesn't.
+
+The intuition is geometric: skill space has a loss landscape with local optima. Ad-hoc editing takes large semantic jumps that land at suboptimal skills — the gray path through a hilly loss surface. Bounded editing with a validation gate follows a stable, controlled trajectory toward better minima. Rejected edits are proposals that would move uphill; the gate filters them before they land. This is why "just let the agent rewrite it" consistently underperforms measured iteration — uncontrolled editing is gradient-free wandering through a topology that has traps.
+
+Four mechanisms keep self-editing stable:
+
+**Textual learning rate.** Cap the number of edits per iteration. The analog of learning rate in gradient descent — it bounds how far a single step can move. Empirical evidence (SkillOpt, 2026) found 4-8 edits per step is the sweet spot; unbounded rewriting caused measurable degradation across benchmarks. The budget can follow a schedule (constant, cosine, linear decay) depending on how exploratory the early iterations need to be.
+
+**Validation gate.** Every proposed edit set is evaluated against held-out data before acceptance. The gate must require strict improvement — ties rejected. Without this, a self-editing loop accepts most of what it proposes, compounding small regressions into large drift. The empirical finding: the best self-edited artifacts land with 1-4 accepted edits total out of many proposed. If your loop is accepting most proposals, it isn't filtering hard enough.
+
+**Rejected-edit buffer.** Record failed proposals with their observed failure patterns. Feed them as negative signal into future iterations — the optimizer learns what *not* to try without paying inference-time cost. This is cheap (no deployment overhead) and worth -1.6 to -4.6 points of value when removed.
+
+**Four-category epoch reflection.** At epoch boundaries — after a full pass through the evidence — compare the previous and current skill on the same samples and classify outcomes into four buckets: improvements, regressions, persistent failures, and stable successes. This is richer than a binary "better/worse" gate. The reflection feeds a meta-skill that tracks which edits helped, which failed, and what failure patterns remain, then updates the optimizer's future proposals. The optimizer doesn't just get better at the task; it gets better at *proposing edits* for the task.
+
+These four compose with the protected-section invariant (see `../../architecture.md`): the learning rate bounds step-level edits, the validation gate filters them, and the protected section ensures that even accepted fast edits can't overwrite slow-won lessons. Together they turn "agent improves its own files" from an uncontrolled drift into a stable optimization loop.
+
 ## Concurrency and queueing
 
 Whenever the harness is invoked by multiple users or event streams in parallel, scheduling becomes a control concern. Three patterns recur. **Queue with concurrency limit** bounds max parallel executions to control cost and rate limits. **Per-key serialization** ensures that within a single conversation or thread, turns don't race each other — the key is usually conversation-id or user-id. **Backpressure** defines what happens when the system is overloaded: drop, defer, or surface "I'll get back to you" to the user.

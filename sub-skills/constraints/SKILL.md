@@ -84,6 +84,16 @@ The skill produces a **Constraints Document** with four parts:
 
 This document feeds the system prompt (Step 5) and is one of the inputs to `workflow-review` later, where it is checked under the "safety / risk" dimension.
 
+## Constraints within skill files
+
+The mutable/immutable boundary also applies *inside* the artifact when the artifact is subject to iterative self-improvement — a skill file being optimized, a prompt being refined, a plan being revised across cycles.
+
+The pattern: split the file into a **protected section** (slow-won lessons that change only through a broadly-sampled, gated process) and a **working section** (hypotheses open to bounded editing each iteration). The protected section is immutable within an optimization pass. This prevents a sequence of locally-correct fast edits from overwriting a globally-important lesson that took many runs to discover.
+
+When defining constraints for a self-improving workflow, add a fifth item to the immutable list:
+
+- **Protected sections of the artifact itself.** If the agent can edit the slow-lessons section during fast iteration, the optimization loop loses its memory. Mark the boundary structurally (a named section, a frontmatter field) so it's visible to every editor — human or agent.
+
 ## Failure modes
 
 - **Ground truth in the mutable zone.** If tests, rubrics, or eval data live where the agent can edit them, the workflow has no real check. Fix immediately — this is the most expensive constraint failure.
