@@ -100,4 +100,4 @@ When defining constraints for a self-improving workflow, add a fifth item to the
 - **Implicit constraints.** Constraints the human knows but the agent does not are constraints that exist only after a violation.
 - **Agent-driven boundary changes.** The agent must never silently expand what it can touch. Any expansion is a human action.
 
-Back-references: `../../architecture.md` "Constraints principle" — the underlying principle, the worked example, the mutable/immutable table.
+Back-references: `../../architecture.md` "Constraints principle" — the underlying principle, the worked example, the mutable/immutable table. See also "The self-improving loop" and `../self-improving-loop/SKILL.md`, where this read-only wall on evidence (ground truth and traces mounted immutable) is the load-bearing invariant.

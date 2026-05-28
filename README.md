@@ -39,6 +39,7 @@ Invokable procedures, each with numbered steps, decision rules, and an output co
 | [`memory-system`](sub-skills/memory-system/SKILL.md) | Designing the memory architecture — what persists, what compacts, what drops, where it lives. |
 | [`workflow-ux`](sub-skills/workflow-ux/SKILL.md) | Designing the human-in-the-loop surface — latency disclosure, wait states, confidence routing, escalation. |
 | [`workflow-review`](sub-skills/workflow-review/SKILL.md) | Auditing (5 dimensions) or debugging (5 context-degradation modes + ambiguity). |
+| [`self-improving-loop`](sub-skills/self-improving-loop/SKILL.md) | Building a workflow that compounds — corrections become evals that drive validated, human-gated fixes. For messy-input / correct-output / experts-already-correct work. |
 | [`voice-dna`](sub-skills/voice-dna/SKILL.md) | Cloning a user's communication style from real samples across four voice layers. |
 
 ## Theory layers
@@ -116,6 +117,7 @@ workflow_skill/
     ├── memory-system/
     ├── workflow-ux/
     ├── workflow-review/
+    ├── self-improving-loop/
     └── voice-dna/
 ```
 

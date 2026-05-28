@@ -15,7 +15,7 @@ A skill set for designing agentic workflows. `SKILL.md` at the root is the entry
 | `architecture.md` | Cross-layer synthesis (3-layer model, pattern catalog, design DNA, stop-at-ambiguity) |
 | `persona/`, `memory/`, `skill-design/`, `tools/`, `resolvers/`, `harness/` | Layer theory — `principles.md` per folder |
 | `harness/context-injection/`, `harness/control/`, `harness/observe-verify/`, `harness/persist/` | 5-component anatomy — `principles.md` per folder |
-| `sub-skills/<name>/SKILL.md` | Invokable sub-skills — `scenarios`, `constraints`, `memory-system`, `workflow-ux`, `workflow-review`, `voice-dna` |
+| `sub-skills/<name>/SKILL.md` | Invokable sub-skills — `scenarios`, `constraints`, `memory-system`, `workflow-ux`, `workflow-review`, `self-improving-loop`, `voice-dna` |
 
 ## File conventions
 

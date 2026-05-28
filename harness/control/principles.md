@@ -96,6 +96,8 @@ Four mechanisms keep self-editing stable:
 
 These four compose with the protected-section invariant (see `../../architecture.md`): the learning rate bounds step-level edits, the validation gate filters them, and the protected section ensures that even accepted fast edits can't overwrite slow-won lessons. Together they turn "agent improves its own files" from an uncontrolled drift into a stable optimization loop.
 
+The same validation gate is the inner loop of a self-improving *system* — an agent improving the product (extraction schemas, mappers) rather than its own files, proving each change against an eval before a human merges it. See `../../architecture.md` "The self-improving loop".
+
 ## Concurrency and queueing
 
 Whenever the harness is invoked by multiple users or event streams in parallel, scheduling becomes a control concern. Three patterns recur. **Queue with concurrency limit** bounds max parallel executions to control cost and rate limits. **Per-key serialization** ensures that within a single conversation or thread, turns don't race each other — the key is usually conversation-id or user-id. **Backpressure** defines what happens when the system is overloaded: drop, defer, or surface "I'll get back to you" to the user.

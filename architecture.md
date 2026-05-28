@@ -252,6 +252,38 @@ Empirical evidence (SkillOpt, 2026) measured the cost of removing this guarantee
 
 This generalizes beyond formal optimization. Any skill file that gets revised over time — by an agent, by a human, by a scheduled review — benefits from marking which sections carry hard-won lessons (slow) and which sections are working hypotheses open to change (fast). Convention is fragile; a structural marker (a frontmatter field, a named section, a comment fence) makes the boundary visible to every future editor.
 
+## The self-improving loop
+
+The pattern catalog frames the shape of one workflow; multi-agent coordination frames how several agents relate. A third axis is orthogonal to both: how a workflow *improves over time*. It applies to a specific class of system — inputs are messy and unstructured, outputs must be correct, and human experts already correct the outputs as part of their job. When those three hold, the corrections experts already make are free training signal, and the workflow can be built to compound on them.
+
+The phrase is misleading, so state the mechanism plainly: **the model does not learn; the system does.** No weights change, no fine-tuning. What evolves is the product around the model — extraction schemas, source selection, mappers, prompts, skill files, and above all the eval set. The eval set, not the model, is the asset that accumulates; it is what makes the second failure mode — and the second domain — cheaper than the first.
+
+The engine is a loop. The system does real work and records what it did; experts correct that work as part of their job; corrections are captured as structured diffs, not silent re-edits; recurring diffs are clustered into named failure modes; each actionable mode becomes a bounded task with a pass/fail eval; an agent fixes the product and proves the fix against that eval plus a regression suite; a human reviews and ships; the shipped change runs in production and generates new evidence. The defining property is that **doing the work generates the improvement signal** — corrections are free labels, so there is no labeling effort that grows with scale, which is why the system compounds instead of plateauing. The proof that it is *improving* and not merely expanding coverage: accuracy rises *while the task gets harder*. Rising accuracy at fixed difficulty is tuning; rising accuracy against rising difficulty is the signature of the loop.
+
+The architecture is one inner loop the agent runs autonomously, sitting inside an outer loop humans run. They touch at exactly two points, each a piece of infrastructure.
+
+| | Inner loop (agent) | Outer loop (human) |
+|--|--------------------|--------------------|
+| Tempo | Fast, high-volume, autonomous | Slow, low-volume, judgment-heavy |
+| Does | Investigate · fix · validate · open PR | Cluster failures · triage · review · merge |
+| Bounded by | The two valves | Domain judgment |
+
+The valves are the **issue queue** (where work enters) and the **PR / review system** (where work exits), both closed by default — nothing enters without a human-shaped ticket, nothing ships without a human merge. Both loops read the same substrate: the production trace, the recorded history of what the system did with provenance back to source. The safety model lives entirely in the two valves, which is why the inner loop can run as fast and as parallel as you like — more attempts and dead ends explored cheaply is *good*. Autonomy here is not safe because it is limited; it is safe because it is **fenced**.
+
+The clustering gate is the one irreplaceable human step. A large fraction of correction diffs are not failures — they are human preferences, values carried forward from prior runs, and workflow artifacts. Pipe raw diffs into the loop and the agent optimizes toward noise: it "fixes" preferences as if they were bugs, and the system degrades instead of compounding. So a human groups diffs into named failure modes and discards the noise before anything is built. This is the single place where domain judgment cannot be automated away, and it is what makes the system *self*-improving rather than merely autonomous.
+
+It is less a new mechanism than an assembly of ones this repo already states separately, organized around that one class of problem:
+
+- The read-only wall on evidence — ground truth and the trace mounted immutable — is the **Constraints principle** above, applied so the agent cannot improve a score by corrupting what it is scored against.
+- The inner loop's eval gate and regression discipline are **bounded self-editing** (`harness/control/principles.md`): a validation gate that requires strict improvement, with the protected-section invariant keeping slow-won lessons from being overwritten by fast eval-chasing.
+- The two valves are the human gates of **confidence-routed branching** and graduated trust (`harness/control/principles.md`) — the queue and the PR are where the deterministic layer holds the decision, not the model.
+- The trace store, the issue queue, and PR-as-artifact are **audit-before-action** and **file-based IPC** (`harness/persist/principles.md`): the file system, not the agent, is what gets trusted.
+- The eval system is the **observe-verify** layer (`harness/observe-verify/principles.md`) made durable and versioned — the grader is the evaluator kept separate from the generator.
+
+The invariants, violating any one of which turns self-improving into self-degrading: two human gates always (what is a real failure; what ships); ground truth immutable; the writable/read-only split enforced by the environment; automation scoped to the bounded extraction-and-mapping layer; evals are versioned files, not notebooks; the grader is fixable code; tickets are eval-shaped; PRs carry targeted + regression evidence; noise is filtered before it becomes work.
+
+You know it is working — beyond "the agent seems smart" — when completion-threshold curves rise over calendar time, accuracy rises against rising difficulty (the signature), ticket cycle time falls as abstractions accumulate, regressions are caught pre-merge, and reviewer time per PR stays near-constant even as volume rises. To build one, see `sub-skills/self-improving-loop`.
+
 ## Foundational values
 
 Before architecture choices come the values the architecture has to preserve. Five recur across agentic workflow design — missing any one produces systems that work technically but feel wrong, unsafe, or brittle in production.

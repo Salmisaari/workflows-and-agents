@@ -1,6 +1,6 @@
 ---
 name: design-workflow
-description: Use when designing a new agentic workflow from scratch — "how should I build an agent that…", "design a workflow for…", "what's the right shape for…". Runs the diagnostic, picks the execution pattern, routes to specialized skills (memory-system, scenarios, constraints, workflow-review, workflow-ux) as the question narrows.
+description: Use when designing a new agentic workflow from scratch — "how should I build an agent that…", "design a workflow for…", "what's the right shape for…". Runs the diagnostic, picks the execution pattern, routes to specialized skills (memory-system, scenarios, constraints, workflow-review, workflow-ux, self-improving-loop) as the question narrows.
 ---
 
 # Design Workflow
@@ -40,6 +40,8 @@ Six recurring shapes. Pick one. Do not invent a seventh.
 - **Full agent loop** — unbounded exploration. Agent decides when to stop.
 
 Picking the wrong shape is the top cause of fragile agentic systems. If torn between two, list both with their tradeoffs and ask the user before committing.
+
+A workflow can also be a *system that compounds*, not just a shape to pick. If inputs are messy, outputs must be correct, and experts already correct the outputs as part of their job, route to `self-improving-loop` — it wraps one of the shapes above (usually a pipeline or hydrated loop) in an eval-driven, human-gated improvement loop.
 
 ## Design sequence
 

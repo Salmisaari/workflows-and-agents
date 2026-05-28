@@ -1,3 +1,7 @@
 ## [2026-05-26] integrate | SkillOpt paper insights
 
 Integrated SkillOpt (arXiv:2605.23904) findings into the repo. New sections: skill compactness and portability with specific numbers (~920 token median, +59.7 cross-harness transfer), protected-section invariant (-22.5 ablation cost), loss landscape framing for bounded self-editing, four-category epoch reflection, within-file constraints. Touched: architecture.md, harness/control/principles.md, sub-skills/constraints/SKILL.md.
+
+## [2026-05-28] integrate | Self-improving loop architecture
+
+Added the self-improving loop as a third workflow axis (how a workflow improves over time): the model is fixed and the eval set is the asset that compounds; two nested loops with two human valves (issue queue in, PR out); the clustering/noise-filtering gate as the one irreplaceable human step. New sub-skill `self-improving-loop` carries the build order (phases 0–5), the handoff schemas (trace, correction diff, failure cluster, hill ticket, PR), and the Droppe invoice worked example. Framed as a composition of existing principles — constraints (read-only wall), bounded self-editing (eval gate), confidence-routed branching (the two gates), audit-before-action + file-based IPC (trace/queue/PR), observe-verify (grader vs generator) — cross-linked rather than restated. Touched: architecture.md, SKILL.md, README.md, CLAUDE.md, harness/control/principles.md, sub-skills/constraints/SKILL.md; new sub-skills/self-improving-loop/SKILL.md.
